@@ -1,7 +1,7 @@
 // An attribute to hide warnings for unused code.
-#![allow(dead_code)]
+#![allow(dead_code)] // Tells compiler to ignore dead code warning
 
-#[derive(Debug)]
+#[derive(Debug)] // Implement `Debug`, which allows debug printing...
 struct Person {
 	name: String,
 	age: u8,
