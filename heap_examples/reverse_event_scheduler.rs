@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
-use std::cmp::Reverse;
 
 #[derive(Debug, PartialEq, PartialOrd)]
 struct Event {
@@ -9,47 +8,10 @@ struct Event {
 
 impl Eq for Event {}
 
+// Implement Ord trait for Event
 impl Ord for Event {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.partial_cmp(other).unwrap_or(Ordering::Equal)
-    }
-}
-
-struct Environment {
-    event_queue: BinaryHeap<Reverse<Event>>,
-    clock: f64,
-}
-
-impl Environment {
-    fn new() -> Self {
-        Self {
-            event_queue: BinaryHeap::new(),
-            clock: 0.0,
-        }
-    }
-
-    fn schedule_event(&mut self, event: Event) {
-        self.event_queue.push(Reverse(event));
-    }
-
-    fn run(&mut self, end_time: f64) {
-        while let Some(Reverse(current_event)) = self.event_queue.pop() {
-            if current_event.time < end_time {
-                self.clock = current_event.time;
-                current_event.execute();
-            } else {
-                self.clock = end_time;
-                break;
-            }
-        }
-
-		if self.event_queue.is_empty() {
-			self.clock = end_time;
-		}
-    }
-
-    fn now(&self) -> f64 {
-        self.clock
+        self.time.partial_cmp(&other.time).unwrap_or(Ordering::Equal)
     }
 }
 
@@ -63,23 +25,50 @@ impl Event {
     }
 }
 
+struct Environment {
+    event_queue: BinaryHeap<Event>,
+    clock: f64,
+}
+
+impl Environment {
+    fn new() -> Self {
+        Self {
+            event_queue: BinaryHeap::new(),
+            clock: 0.0,
+        }
+    }
+
+    fn schedule_event(&mut self, event: Event) {
+        self.event_queue.push(event);
+    }
+
+    fn run(&mut self, end_time: f64) {
+        while let Some(current_event) = self.event_queue.pop() {
+            if current_event.time < end_time {
+                self.clock = current_event.time;
+                current_event.execute();
+            } else {
+                self.clock = end_time;
+                break;
+            }
+        }
+    }
+
+    fn now(&self) -> f64 {
+        self.clock
+    }
+}
+
 fn main() {
     let mut env = Environment::new();
 
     // Schedule events
     env.schedule_event(Event::new(5.0));
     env.schedule_event(Event::new(2.0));
-    env.schedule_event(Event::new(4.0));
-    env.schedule_event(Event::new(3.0));
-    env.schedule_event(Event::new(1.0));
-    env.schedule_event(Event::new(0.0));
-    env.schedule_event(Event::new(10.0));
     env.schedule_event(Event::new(8.0));
-    env.schedule_event(Event::new(7.0));
-    env.schedule_event(Event::new(6.0));
-   
-   // Simulate until max time
-    env.run(100.0);
+
+    // Run the simulation until time 10.0
+    env.run(10.0);
 
     // Print the current time after simulation
     println!("Simulation ended at time: {}", env.now());
