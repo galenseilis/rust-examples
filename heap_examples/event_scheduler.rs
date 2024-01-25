@@ -34,7 +34,7 @@ impl Environment {
 
     fn run(&mut self, end_time: f64) {
         while let Some(Reverse(current_event)) = self.event_queue.pop() {
-            if current_event.time < end_time {
+            if current_event.time + f64::EPSILON  < end_time {
                 self.clock = current_event.time;
                 current_event.execute();
             } else {
