@@ -13,6 +13,9 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
-
 # PyO3 Env
 pyo3/string_sum/.env/*
+
+
+# Ignore database files
+*.db
