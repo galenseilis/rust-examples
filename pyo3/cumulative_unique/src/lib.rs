@@ -1,8 +1,8 @@
 use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 use ndarray::Array1;
 use std::collections::HashSet;
 
-/// Calculates the cumulative unique mask
 #[pyfunction]
 fn cunique(arr: Vec<i64>) -> PyResult<Vec<bool>> {
     let arr = Array1::from(arr);

@@ -4,9 +4,9 @@ import numpy as np
 
 
 result = None
-for i in range(10000):
+for i in range(1000):
 	print(i)
-	x = np.random.binomial(100, 0.1, size=100)
+	x = np.random.binomial(1, 0.5, size=100).tolist()
 	mask = cu.cunique(x)
 	if result is None:
 		result = np.array(mask)
