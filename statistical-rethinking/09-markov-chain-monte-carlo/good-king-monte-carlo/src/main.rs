@@ -1,3 +1,4 @@
+use csv::Writer;
 use plotters::prelude::{BitMapBackend, ChartBuilder, IntoDrawingArea, Rectangle};
 use plotters::style::{Color, BLUE, WHITE};
 use rand::Rng;
@@ -43,6 +44,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         positions[i] = current;
     }
 
+    // Save results to CSV
+    let mut writer = Writer::from_path("positions.csv")?;
+    for &position in &positions {
+        writer.write_record(&[position.to_string()])?;
+    }
+    writer.flush()?;
+
     // Frequency counts of values
     let mut frequencies = vec![0; MAX_VALUE as usize];
     for &position in &positions {
@@ -78,17 +86,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Plot bars
     for (value, &count) in frequencies.iter().enumerate() {
         let x = value as i32 + 1;
+
+        let rect = Rectangle::new(
+            [(x,0), (x, count)],
+            BLUE.filled(),
+        );
+
         chart.draw_series(
-            std::iter::once(
-                Rectangle::new(
-                    [(x,0), (x, count)],
-                    BLUE.filled(),
-                )
-            )
+            std::iter::once(rect)
         )?;
     }
 
-    let _ = root.present();
+    root.present();
 
     Ok(())
 }
