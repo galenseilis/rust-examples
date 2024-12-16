@@ -97,7 +97,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
     }
 
-    root.present();
+    let _ = root.present();
 
     Ok(())
 }
